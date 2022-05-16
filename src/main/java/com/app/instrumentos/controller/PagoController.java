@@ -17,6 +17,7 @@ import com.app.instrumentos.dto.PagosDTO;
 import com.app.instrumentos.dto.TarjetaDTO;
 import com.app.instrumentos.model.Pago;
 import com.app.instrumentos.repository.PagoRepository;
+import com.app.instrumentos.utils.Utils;
 
 @RestController
 public class PagoController {
@@ -32,28 +33,8 @@ public class PagoController {
 	@GetMapping("/getpagos")
 	private PagosDTO getPagos(@RequestParam(name="idUsuario")Long idUsuario){
 		List<Pago> pagos= pagoRepository.findAll();
-		
 		PagosDTO pagosDTO=new PagosDTO();
-		
-		pagos.stream().forEach(p->{
-			PagoDTO pagoDTO=new PagoDTO();
-			FacturaDTO facturaDTO=new FacturaDTO();
-			facturaDTO.setIdDocumento(p.getFactura().getIdDocumento());
-			facturaDTO.setMonto(p.getFactura().getMonto());
-			facturaDTO.setNumeroDocumento(p.getFactura().getNumeroDocumento());
-			facturaDTO.setTipo(p.getFactura().getTipo());
-			
-			TarjetaDTO tarjetaDTO=new TarjetaDTO();
-			
-			pagoDTO.setFactura(facturaDTO);
-			pagoDTO.setFechaPago(p.getFechaPago());
-			pagoDTO.setIdPago(p.getIdPago());
-			pagoDTO.setIdUsuario(p.getIdUsuario());
-			pagoDTO.setMonto(p.getMonto());
-			pagoDTO.setFactura(facturaDTO);
-			
-			pagosDTO.getPagos().add(pagoDTO);
-		});
+		Utils.armarDTORespuesta(pagos,pagosDTO);
 		return pagosDTO;
 	}
 
