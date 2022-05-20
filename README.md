@@ -6,4 +6,4 @@ Para correr el microservicio:
 
 - docker build -t springboot-instr-back-docker.jar .
 - docker images
-- docker run <id imagen>
+- docker run {nombre imagen}
