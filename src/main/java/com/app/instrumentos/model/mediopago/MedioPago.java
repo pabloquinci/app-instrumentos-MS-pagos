@@ -1,10 +1,11 @@
 package com.app.instrumentos.model.mediopago;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+
 @Entity
 @Table(name="medio_pago",schema="public_pagos")
 @Inheritance(strategy = InheritanceType.JOINED)
