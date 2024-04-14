@@ -1,4 +1,5 @@
-FROM openjdk:8
-EXPOSE 8081
-ADD target/springboot-instr-ms-pago-docker.jar springboot-instr-ms-pago-docker.jar
-ENTRYPOINT ["java","-jar","/springboot-instr-ms-pago-docker.jar"]
+FROM eclipse-temurin:17
+LABEL mentainer="pquinci@gmail.com"
+WORKDIR /app
+COPY target/springboot-instr-mp-docker.jar /app/springboot-instr-mp-docker.jar
+ENTRYPOINT ["java","-jar","springboot-instr-mp-docker.jar"]

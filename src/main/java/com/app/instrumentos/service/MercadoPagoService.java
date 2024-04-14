@@ -1,5 +1,6 @@
 package com.app.instrumentos.service;
 
+import com.app.instrumentos.dto.OrderEvent;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,12 +25,18 @@ public class MercadoPagoService{
 	
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private ProducerService orderProducer;
 
-public PaymentResponseDTO processPayment(CardPaymentDTO cardPaymentDTO) {
-  try {
+
+
+	public PaymentResponseDTO processPayment(CardPaymentDTO cardPaymentDTO) {
+		OrderEvent event = new OrderEvent();
+
+		try {
 	    MercadoPagoConfig.setAccessToken(mercadoPagoAccessToken);
-	
-	    PaymentClient paymentClient = new PaymentClient();
+
+	  	PaymentClient paymentClient = new PaymentClient();
 	
 	    PaymentCreateRequest paymentCreateRequest =
 	        PaymentCreateRequest.builder()
@@ -60,11 +67,19 @@ public PaymentResponseDTO processPayment(CardPaymentDTO cardPaymentDTO) {
 	        String.valueOf(createdPayment.getStatus()),
 	        createdPayment.getStatusDetail());*/
 	  } catch (MPApiException apiException) {
-	    System.out.println(apiException.getApiResponse().getContent());
-	    throw new MercadoPagoException(apiException.getApiResponse().getContent());
+			event.setStatus("ERROR 2");
+			event.setMessage("El pago no se produjo");
+			orderProducer.sendMessage(event);
+			System.out.println(apiException.getApiResponse().getContent());
+	    	throw new MercadoPagoException(apiException.getApiResponse().getContent());
+
+
 	  } catch (MPException exception) {
-	    System.out.println(exception.getMessage());
-	    throw new MercadoPagoException(exception.getMessage());
+			event.setStatus("El pago no se produjo");
+			event.setMessage("Order is in pending status");
+			orderProducer.sendMessage(event);
+	    	System.out.println(exception.getMessage());
+	    	throw new MercadoPagoException(exception.getMessage());
 	  }
 	}
 
